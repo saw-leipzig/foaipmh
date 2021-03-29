@@ -1,0 +1,14 @@
+# Python
+*.pyc
+.venv/*
+.mypy_cache/*
+
+# Django
+media/*
+static/*
+db.sqlite3
+local.py
+
+# SublimeText
+*.sublime-project
+*.sublime-workspace
