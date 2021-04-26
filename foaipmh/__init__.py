@@ -1,1 +1,1 @@
-"""Fedora OAI-PMH."""
+"""Fedora OAI-PMH Django app."""

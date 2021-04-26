@@ -15,7 +15,7 @@ import os
 import sys
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "foaipmh",
+    "oai_pmh",
 ]
 
 MIDDLEWARE = [
@@ -139,9 +141,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 # Fedora Endpoint
 
-FEDORA_URL: Optional[str] = None
-FEDORA_AUTH: Optional[Dict[str, str]] = None
-FEDORA_METADATA_SUFFIX: Optional[Dict[str, str]] = None
+FEDORA_REST_ENDPOINT: Optional[str] = None
+FEDORA_AUTH: Optional[Tuple[str, str]] = None
+FEDORA_METADATA_SUFFIX: Dict[str, str] = {"oai_dc": "/DC"}
 
 
 # Load local settings
