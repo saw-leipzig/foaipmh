@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=dj_foaipmh
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    build: ./
+    command: gunicorn foaipmh.wsgi:application --bind 0.0.0.0:8000 --timeout 0 --workers 6 --threads 3
+    volumes:
+      - ./:/usr/src/foaipmh/
+      - static_volume:/usr/src/foaipmh/static
+    expose:
+      - 8000
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - 8000:80
+    volumes:
+      - static_volume:/usr/src/foaipmh/static
+    depends_on:
+      - db
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
