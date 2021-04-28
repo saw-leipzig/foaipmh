@@ -9,6 +9,9 @@ static/*
 db.sqlite3
 local.py
 
+# Docker
+.env.db
+
 # SublimeText
 *.sublime-project
 *.sublime-workspace

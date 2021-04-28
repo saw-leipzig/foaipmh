@@ -26,7 +26,8 @@ class Command(BaseCommand):
             "--sleep",
             type=int,
             default=5,
-            help="Sleep intervall in sec. To prevent to many requests in short time.",
+            help="Sleep intervall in sec. To prevent to many requests in short time. "
+            + "Default: 5",
         )
 
     def handle(self, *args, **options):
@@ -38,14 +39,14 @@ class Command(BaseCommand):
             try:
                 metadata_formats[k] = MetadataFormat.objects.get(prefix=k)
             except MetadataFormat.DoesNotExist as e:
-                self.stdout.write(
+                self.stderr.write(
                     self.style.ERROR(
                         f'Missing metadata format for "{k}" Fedora metadata suffix.'
                     )
                 )
                 self.stdout.write(self.style.ERROR(e))
 
-        if verbosity > 1:
+        if verbosity >= 1:
             self.stdout.write(f"Import metadata from {settings.FEDORA_REST_ENDPOINT}.")
 
         r = requests.get(
@@ -59,7 +60,7 @@ class Command(BaseCommand):
 
         sets = {}
         for i in r.json()[0]["http://www.w3.org/ns/ldp#contains"]:
-            if verbosity > 2:
+            if verbosity >= 2:
                 self.stdout.write(f"Fetch from {i['@id']}.")
             r = requests.get(
                 i["@id"],
@@ -133,11 +134,13 @@ class Command(BaseCommand):
             try:
                 k.sets.add(Set.objects.get(spec=v))
             except Set.DoesNotExist:
-                self.stderr.write(f"Set {v} not found while adding to header {k}.")
+                self.stderr.write(
+                    self.style.ERROR(f"Set {v} not found while adding to header {k}.")
+                )
 
         nb_sets = Set.objects.count() - nb_sets
         nb_headers = Header.objects.count() - nb_headers
 
-        if verbosity > 1:
+        if verbosity >= 1:
             self.stdout.write(f"Added {nb_sets} sets.")
             self.stdout.write(f"Added {nb_headers} headers.")
