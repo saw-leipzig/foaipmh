@@ -10,7 +10,7 @@ db.sqlite3
 local.py
 
 # Docker
-.env.db
+env.db
 
 # SublimeText
 *.sublime-project

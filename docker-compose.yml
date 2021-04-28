@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   db:
@@ -6,11 +6,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
-      - ./.env.db
-    environment:
-      - POSTGRES_DB=dj_foaipmh
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - ./env.db
+    restart: always
   web:
     build: ./
     command: gunicorn foaipmh.wsgi:application --bind 0.0.0.0:8000 --timeout 0 --workers 6 --threads 3
