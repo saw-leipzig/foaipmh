@@ -52,17 +52,17 @@ Fedora OAI-PMH Endpoint.
   FEDORA_AUTH = ("USERNAME", "PASSWORD") # or None
   FEDORA_METADATA_SUFFIX = {
       # OAI-PMH metadatat format prefix: URL path suffix
-      "oai_cmdi": "/cmdi",
+      "cmdi": "/cmdi",
       "oai_dc": "/DC"
   }
 
   OAI_PMH = {
-      "REPOSITORY_NAME": "Universität Leipzig"
-      "NUM_PER_PAGE": 200# Default 100
+      "REPOSITORY_NAME": "SAW Leipzig",
+      "NUM_PER_PAGE": 200 # Default 100
   }
   ```
 
-* Additonally for production:
+* Additionally, for production:
   ```python
   DEBUG = False
 
