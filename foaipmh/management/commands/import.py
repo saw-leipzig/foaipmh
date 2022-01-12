@@ -13,8 +13,8 @@ class Command(BaseCommand):
 
     help = "Import metadata from Fedora."
 
-    key_set_spec = "http://www.openarchives.org/OAI/2.0setSpec"
-    key_set_name = "http://www.openarchives.org/OAI/2.0setName"
+    key_set_spec = "http://www.openarchives.org/OAI/2.0/setSpec"
+    key_set_name = "http://www.openarchives.org/OAI/2.0/setName"
     key_identifier = "http://purl.org/dc/elements/1.1/identifier"
     key_created = "http://fedora.info/definitions/v4/repository#created"
     key_memberof = "http://purl.org/dc/elements/1.1/memberOf"
