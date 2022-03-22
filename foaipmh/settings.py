@@ -146,6 +146,28 @@ FEDORA_AUTH: Optional[Tuple[str, str]] = None
 FEDORA_METADATA_SUFFIX: Dict[str, str] = {"oai_dc": "/DC"}
 
 
+# Logging
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'handlers': {
+      'file': {
+         'level': 'DEBUG',
+         'class': 'logging.FileHandler',
+         'filename': '/tmp/debug.log',
+      },
+   },
+   'loggers': {
+      'django': {
+         'handlers': ['file'],
+         'level': 'DEBUG',
+         'propagate': True,
+      },
+   },
+}
+
+
 # Load local settings
 
 try:
