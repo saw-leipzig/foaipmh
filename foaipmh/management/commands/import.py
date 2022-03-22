@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from oai_pmh.models import DCRecord, Header, MetadataFormat, Set, XMLRecord
 from time import sleep
-
+from xml.etree import ElementTree
 
 class Command(BaseCommand):
     """Fedora OAI-PMH import command."""
@@ -106,10 +106,18 @@ class Command(BaseCommand):
                 identifier = data[self.key_identifier][0]["@value"]
             else:
                 identifier = f"oai:{fedora_id}"
-            if "self.key_created" in data:
-                timestamp = data["self.key_created"][0]["@value"]
-            else:
+
+            r_meta = requests.get(fedora_id, auth=settings.FEDORA_AUTH, headers={"Accept": "application/rdf+xml"})
+            try:
+                root = ElementTree.fromstring(r_meta.text)
+                ns = {'fedora': 'http://fedora.info/definitions/v4/repository#'}
+                nodes = root.findall('.//fedora:lastModified', ns)
+            except ElementTree.ParseError:
+                 nodes = []
+            if len(nodes) < 1:
                 timestamp = None
+            else:
+                timestamp = nodes[0].text
             if self.key_memberof in data:
                 setspec = data[self.key_memberof][0]["@value"]
             else:
