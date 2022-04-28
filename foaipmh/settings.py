@@ -143,7 +143,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 FEDORA_REST_ENDPOINT: Optional[str] = None
 FEDORA_AUTH: Optional[Tuple[str, str]] = None
-FEDORA_METADATA_SUFFIX: Dict[str, str] = {"oai_dc": "/DC"}
+FEDORA_METADATA_PREDICATES: Dict[str, str] = {"oai_dc": "http://saw-leipzig.de/vocabulary#dcmiRecord"}
 
 
 # Logging
