@@ -47,6 +47,7 @@ Fedora OAI-PMH Endpoint.
   TIME_ZONE = 'Europe/Berlin'
   ADMINS = [('NAME', 'EMAIL')]
   ALLOWED_HOSTS = ('localhost', '127.0.0.1') # For production set to ("DNS",)
+  BASE_URL = "https://repo.data.saw-leipzig.de/oai-pmh"
 
   FEDORA_REST_ENDPOINT = "URL"
   FEDORA_AUTH = ("USERNAME", "PASSWORD") # or None
