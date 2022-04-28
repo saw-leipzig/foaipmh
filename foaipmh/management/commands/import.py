@@ -36,7 +36,7 @@ class Command(BaseCommand):
         verbosity = int(options["verbosity"])
 
         metadata_formats = {}
-        for k, v in settings.FEDORA_METADATA_SUFFIX.items():
+        for k, v in settings.FEDORA_METADATA_PREDICATES.items():
             try:
                 metadata_formats[k] = MetadataFormat.objects.get(prefix=k)
             except MetadataFormat.DoesNotExist as e:
@@ -134,29 +134,31 @@ class Command(BaseCommand):
             if setspec:
                 self.sets[header] = setspec
 
-            for k, v in settings.FEDORA_METADATA_SUFFIX.items():
-                if verbosity > 2:
-                    self.stdout.write(f"Fetch from {fedora_id}{v}.")
-                r_metadata = requests.get(
-                    f'{fedora_id}{v}',
-                    auth=settings.FEDORA_AUTH,
-                )
-                if r_metadata.status_code == requests.codes.ok:
+            for k, v in settings.FEDORA_METADATA_PREDICATES.items():
+                if v in r.json()[0]:
+                    meta_binary_url = r.json()[0][v][0]['@id']
                     if verbosity > 2:
-                        self.stdout.write(f"Add metadata format of type {k}.")
-                    if k == "oai_dc":
-                        dcrecord, created = DCRecord.from_xml(r_metadata.text, header)
-                        if dcrecord:
-                            header.metadata_formats.add(
-                                MetadataFormat.objects.get(prefix="oai_dc")
+                        self.stdout.write(f"Fetch from {meta_binary_url}.")
+                    r_metadata = requests.get(
+                        meta_binary_url,
+                        auth=settings.FEDORA_AUTH,
+                    )
+                    if r_metadata.status_code == requests.codes.ok:
+                        if verbosity > 2:
+                            self.stdout.write(f"Add metadata format of type {k}.")
+                        if k == "oai_dc":
+                            dcrecord, created = DCRecord.from_xml(r_metadata.text, header)
+                            if dcrecord:
+                                header.metadata_formats.add(
+                                    MetadataFormat.objects.get(prefix="oai_dc")
+                                )
+                        else:
+                            XMLRecord.objects.update_or_create(
+                                header=header,
+                                metadata_prefix=metadata_formats[k],
+                                defaults={"xml_metadata": r_metadata.text},
                             )
-                    else:
-                        XMLRecord.objects.update_or_create(
-                            header=header,
-                            metadata_prefix=metadata_formats[k],
-                            defaults={"xml_metadata": r_metadata.text},
-                        )
-                        header.metadata_formats.add(metadata_formats[k])
+                            header.metadata_formats.add(metadata_formats[k])
 
         sleep(sleep_time)
         if "http://www.w3.org/ns/ldp#contains" in r.json()[0]:

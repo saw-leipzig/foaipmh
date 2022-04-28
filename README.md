@@ -50,10 +50,10 @@ Fedora OAI-PMH Endpoint.
 
   FEDORA_REST_ENDPOINT = "URL"
   FEDORA_AUTH = ("USERNAME", "PASSWORD") # or None
-  FEDORA_METADATA_SUFFIX = {
-      # OAI-PMH metadatat format prefix: URL path suffix
-      "cmdi": "/cmdi",
-      "oai_dc": "/DC"
+  FEDORA_METADATA_PREDICATES = {
+      # OAI-PMH metadata format prefix: metadata record predicate
+      "cmdi": "http://saw-leipzig.de/vocabulary#cmdiRecord",
+      "oai_dc": "http://saw-leipzig.de/vocabulary#dcmiRecord"
   }
 
   OAI_PMH = {
