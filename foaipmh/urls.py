@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("oai2/", include("oai_pmh.urls")),
+    path("oai2/", include("oai_pmh.django_oai_pmh.urls")),
     path("admin/", admin.site.urls),
 ]

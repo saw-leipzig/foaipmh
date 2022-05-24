@@ -4,7 +4,7 @@ import requests
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from oai_pmh.models import DCRecord, Header, MetadataFormat, Set, XMLRecord
+from oai_pmh.django_oai_pmh.models import DCRecord, Header, MetadataFormat, Set, XMLRecord
 from time import sleep
 from xml.etree import ElementTree
 
