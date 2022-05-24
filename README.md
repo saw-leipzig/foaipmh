@@ -47,7 +47,6 @@ Fedora OAI-PMH Endpoint.
   TIME_ZONE = 'Europe/Berlin'
   ADMINS = [('NAME', 'EMAIL')]
   ALLOWED_HOSTS = ('localhost', '127.0.0.1') # For production set to ("DNS",)
-  BASE_URL = "https://repo.data.saw-leipzig.de/oai-pmh"
 
   FEDORA_REST_ENDPOINT = "URL"
   FEDORA_AUTH = ("USERNAME", "PASSWORD") # or None
@@ -59,7 +58,8 @@ Fedora OAI-PMH Endpoint.
 
   OAI_PMH = {
       "REPOSITORY_NAME": "SAW Leipzig",
-      "NUM_PER_PAGE": 200 # Default 100
+      "NUM_PER_PAGE": 200, # Default 100
+      "BASE_URL": "https://repo.data.saw-leipzig.de/oai-pmh"
   }
   ```
 
@@ -86,7 +86,7 @@ Fedora OAI-PMH Endpoint.
   ```
 * OAI-PMH:
   * For the adminEmail-Tags the Email-Addresses from the `ADMINS` will be taken.
-  * For the baseURL-Tag the first entry in `ALLOWED_HOSTS` will be taken.
+  * For the baseURL-Tag the `BASE_URL` parameter in `OAI_PMH` is used.
 * [Django settings reference](https://docs.djangoproject.com/en/3.1/ref/settings/)
 
 
