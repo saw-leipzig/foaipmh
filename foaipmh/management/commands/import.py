@@ -86,6 +86,7 @@ class Command(BaseCommand):
             return
 
         data = r.json()[0]
+        r.close()
 
         if self.key_set_spec in data and self.key_set_name in data:
             if verbosity > 2:
@@ -117,6 +118,7 @@ class Command(BaseCommand):
                 setspec = data[self.key_memberof][0]["@value"]
             else:
                 setspec = None
+            r_meta.close()
 
             if verbosity > 2:
                 self.stdout.write(f"Create header {identifier}.")
@@ -130,8 +132,8 @@ class Command(BaseCommand):
                 self.sets[header] = setspec
 
             for k, v in settings.FEDORA_METADATA_PREDICATES.items():
-                if v in r.json()[0]:
-                    meta_binary_url = r.json()[0][v][0]['@id']
+                if v in data:
+                    meta_binary_url = data[v][0]['@id']
                     if verbosity > 2:
                         self.stdout.write(f"Fetch from {meta_binary_url}.")
                     r_metadata = requests.get(
@@ -148,8 +150,9 @@ class Command(BaseCommand):
                             defaults={"xml_metadata": r_metadata.text},
                         )
                         header.metadata_formats.add(metadata_formats[k])
+                    r_metadata.close()
 
         sleep(sleep_time)
-        if "http://www.w3.org/ns/ldp#contains" in r.json()[0]:
-            for i in r.json()[0]["http://www.w3.org/ns/ldp#contains"]:
+        if "http://www.w3.org/ns/ldp#contains" in data:
+            for i in data["http://www.w3.org/ns/ldp#contains"]:
                 self.fetch_from_id(i['@id'], metadata_formats, verbosity, sleep_time)
