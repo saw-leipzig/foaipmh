@@ -8,6 +8,7 @@ from django_oai_pmh.models import DCRecord, Header, MetadataFormat, Set, XMLReco
 from time import sleep
 from xml.etree import ElementTree
 
+
 class Command(BaseCommand):
     """Fedora OAI-PMH import command."""
 
@@ -49,12 +50,6 @@ class Command(BaseCommand):
 
         if verbosity >= 1:
             self.stdout.write(f"Import metadata from {settings.FEDORA_REST_ENDPOINT}.")
-
-        r = requests.get(
-            settings.FEDORA_REST_ENDPOINT,
-            auth=settings.FEDORA_AUTH,
-            headers={"Accept": "application/ld+json"},
-        )
 
         nb_sets = Set.objects.count()
         nb_headers = Header.objects.count()
@@ -113,7 +108,7 @@ class Command(BaseCommand):
                 ns = {'fedora': 'http://fedora.info/definitions/v4/repository#'}
                 nodes = root.findall('.//fedora:lastModified', ns)
             except ElementTree.ParseError:
-                 nodes = []
+                nodes = []
             if len(nodes) < 1:
                 timestamp = None
             else:
