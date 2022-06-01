@@ -3,3 +3,4 @@ requests~=2.25.0
 lxml~=4.6.0
 gunicorn~=20.1.0
 psycopg2-binary~=2.8.0
+git+https://github.com/jnphilipp/django_oai_pmh.git@0.3.0

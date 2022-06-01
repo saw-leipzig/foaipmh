@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "foaipmh",
-    "oai_pmh",
+    "django_oai_pmh",
 ]
 
 MIDDLEWARE = [

@@ -1,3 +1,0 @@
-[submodule "oai_pmh"]
-	path = oai_pmh
-	url = https://github.com/jnphilipp/django_oai_pmh.git

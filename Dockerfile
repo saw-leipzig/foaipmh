@@ -2,7 +2,6 @@
 FROM python:3-alpine
 
 # Set work directory
-
 WORKDIR /usr/src/foaipmh
 RUN mkdir static
 
@@ -10,10 +9,12 @@ RUN mkdir static
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Install git (to fetch django_oai_pmh in requirements)
+RUN apk update
+RUN apk add git
 
 # Install dependencies
-RUN apk update && \
-    apk add build-base gcc musl-dev && \
+RUN apk add build-base gcc musl-dev && \
     apk add postgresql-dev && \
     apk add libxml2-dev libxslt-dev
 #RUN pip install --upgrade pip setuptools
@@ -25,7 +26,6 @@ COPY ./entrypoint.prod.sh .
 
 # Copy project
 COPY ./foaipmh .
-COPY ./oai_pmh .
 COPY ./manage.py .
 COPY ./local.py .
 
