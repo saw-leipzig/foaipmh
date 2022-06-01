@@ -4,7 +4,7 @@ import requests
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django_oai_pmh.models import DCRecord, Header, MetadataFormat, Set, XMLRecord
+from django_oai_pmh.models import Header, MetadataFormat, Set, XMLRecord
 from time import sleep
 from xml.etree import ElementTree
 
@@ -141,19 +141,13 @@ class Command(BaseCommand):
                     if r_metadata.status_code == requests.codes.ok:
                         if verbosity > 2:
                             self.stdout.write(f"Add metadata format of type {k}.")
-                        if k == "oai_dc":
-                            dcrecord, created = DCRecord.from_xml(r_metadata.text, header)
-                            if dcrecord:
-                                header.metadata_formats.add(
-                                    MetadataFormat.objects.get(prefix="oai_dc")
-                                )
-                        else:
-                            XMLRecord.objects.update_or_create(
-                                header=header,
-                                metadata_prefix=metadata_formats[k],
-                                defaults={"xml_metadata": r_metadata.text},
-                            )
-                            header.metadata_formats.add(metadata_formats[k])
+
+                        XMLRecord.objects.update_or_create(
+                            header=header,
+                            metadata_prefix=metadata_formats[k],
+                            defaults={"xml_metadata": r_metadata.text},
+                        )
+                        header.metadata_formats.add(metadata_formats[k])
 
         sleep(sleep_time)
         if "http://www.w3.org/ns/ldp#contains" in r.json()[0]:
