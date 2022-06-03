@@ -1,7 +1,8 @@
 """Fedora OAI-PMH Django app import command."""
 
 import requests
-
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django_oai_pmh.models import Header, MetadataFormat, Set, XMLRecord
@@ -56,7 +57,13 @@ class Command(BaseCommand):
 
         self.sets = {}
 
-        self.fetch_from_id(settings.FEDORA_REST_ENDPOINT, metadata_formats, verbosity, options["sleep"])
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=1.0)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        self.fetch_from_id(session, settings.FEDORA_REST_ENDPOINT, metadata_formats, verbosity, options["sleep"])
 
         for k, v in self.sets.items():
             try:
@@ -73,10 +80,10 @@ class Command(BaseCommand):
             self.stdout.write(f"Added {nb_sets} sets.")
             self.stdout.write(f"Added {nb_headers} headers.")
 
-    def fetch_from_id(self, fedora_id, metadata_formats, verbosity, sleep_time):
+    def fetch_from_id(self, session, fedora_id, metadata_formats, verbosity, sleep_time):
         if verbosity >= 2:
             self.stdout.write(f"Fetch from {fedora_id}.")
-        r = requests.get(
+        r = session.get(
             fedora_id,
             auth=settings.FEDORA_AUTH,
             headers={"Accept": "application/ld+json"},
@@ -103,7 +110,7 @@ class Command(BaseCommand):
             else:
                 identifier = f"oai:{fedora_id}"
 
-            r_meta = requests.get(fedora_id, auth=settings.FEDORA_AUTH, headers={"Accept": "application/rdf+xml"})
+            r_meta = session.get(fedora_id, auth=settings.FEDORA_AUTH, headers={"Accept": "application/rdf+xml"})
             try:
                 root = ElementTree.fromstring(r_meta.text)
                 ns = {'fedora': 'http://fedora.info/definitions/v4/repository#'}
@@ -136,7 +143,7 @@ class Command(BaseCommand):
                     meta_binary_url = data[v][0]['@id']
                     if verbosity > 2:
                         self.stdout.write(f"Fetch from {meta_binary_url}.")
-                    r_metadata = requests.get(
+                    r_metadata = session.get(
                         meta_binary_url,
                         auth=settings.FEDORA_AUTH,
                     )
@@ -155,4 +162,4 @@ class Command(BaseCommand):
         sleep(sleep_time)
         if "http://www.w3.org/ns/ldp#contains" in data:
             for i in data["http://www.w3.org/ns/ldp#contains"]:
-                self.fetch_from_id(i['@id'], metadata_formats, verbosity, sleep_time)
+                self.fetch_from_id(session, i['@id'], metadata_formats, verbosity, sleep_time)
