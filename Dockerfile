@@ -17,7 +17,6 @@ RUN apk add git
 RUN apk add build-base gcc musl-dev && \
     apk add postgresql-dev && \
     apk add libxml2-dev libxslt-dev
-#RUN pip install --upgrade pip setuptools
 RUN pip install --upgrade pip==21.0.1
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
@@ -29,5 +28,5 @@ COPY ./foaipmh .
 COPY ./manage.py .
 COPY ./local.py .
 
-# Run entrypoint.sh
+# Run entrypoint, adding CMDI metadata format
 ENTRYPOINT ["/usr/src/foaipmh/entrypoint.prod.sh"]
