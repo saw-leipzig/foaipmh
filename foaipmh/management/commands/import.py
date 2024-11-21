@@ -65,12 +65,13 @@ class Command(BaseCommand):
 
         self.fetch_from_id(session, settings.FEDORA_REST_ENDPOINT, metadata_formats, verbosity, options["sleep"])
 
-        for k, v in self.sets.items():
+        for header, member_sets in self.sets.items():
             try:
-                k.sets.add(Set.objects.get(spec=v))
+                for member_set in member_sets:
+                    header.sets.add(Set.objects.get(spec=member_set))
             except Set.DoesNotExist:
                 self.stderr.write(
-                    self.style.ERROR(f"Set {v} not found while adding to header {k}.")
+                    self.style.ERROR(f"A set in {member_sets} was not found while trying to add to header {header}.")
                 )
 
         nb_sets = Set.objects.count() - nb_sets
@@ -122,7 +123,7 @@ class Command(BaseCommand):
             else:
                 timestamp = nodes[0].text
             if self.key_memberof in data:
-                setspec = data[self.key_memberof][0]["@value"]
+                setspec = [memberOf["@value"] for memberOf in data[self.key_memberof]]
             else:
                 setspec = None
             r_meta.close()
