@@ -1,5 +1,5 @@
 # Pull official base image
-FROM python:3-alpine
+FROM python:3-10-alpine
 
 # Set work directory
 WORKDIR /usr/src/foaipmh
@@ -17,7 +17,7 @@ RUN apk add git
 RUN apk add build-base gcc musl-dev && \
     apk add postgresql-dev && \
     apk add libxml2-dev libxslt-dev
-RUN pip install --upgrade pip==21.0.1
+RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
